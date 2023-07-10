@@ -1119,12 +1119,14 @@ int xemu_post_init (
 	}
 	sdl_ren = SDL_CreateRenderer(sdl_win, -1, SDL_RENDERER_ACCELERATED);
 	if (!sdl_ren) {
-		ERROR_WINDOW("Cannot create accelerated SDL renderer: %s", SDL_GetError());
+		if (!emu_is_headless) {
+			ERROR_WINDOW("Cannot create accelerated SDL renderer: %s", SDL_GetError());
+		}
 		sdl_ren = SDL_CreateRenderer(sdl_win, -1, 0);
 		if (!sdl_ren) {
 			ERROR_WINDOW("... and not even non-accelerated driver could be created, giving up: %s", SDL_GetError());
 			return 1;
-		} else {
+		} else if (!emu_is_headless) {
 			INFO_WINDOW("Created non-accelerated driver. NOTE: it will severly affect the performance!");
 		}
 	}
